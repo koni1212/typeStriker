@@ -1,0 +1,393 @@
+body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding-top: 20px;
+    color: #333;
+}
+
+#game-container {
+    background-color: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    text-align: center;
+    width: 90%;
+    max-width: 800px;
+}
+
+header {
+    border-bottom: 2px solid #e0e0e0;
+    margin-bottom: 20px; /* 少し詰める (元は25px) */
+    padding-bottom: 12px; /* 少し詰める (元は15px) */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    color: #2c3e50;
+    margin: 0;
+    font-size: 1.8em; /* 少し詰める (元は2em) */
+}
+
+#game-info p {
+    margin: 0 10px; /* 少し詰める (元は12px) */
+    font-size: 1em; /* 少し詰める (元は1.1em) */
+    color: #555;
+}
+#game-info span {
+    font-weight: bold;
+    color: #e74c3c;
+}
+
+.hidden {
+    display: none !important;
+}
+
+#loading-screen p {
+    font-size: 1.2em;
+    padding: 20px;
+}
+
+#difficulty-selection-screen h2 {
+    margin-bottom: 15px; /* 少し詰める (元は20px) */
+    color: #34495e;
+}
+
+.difficulty-button {
+    margin: 8px;
+    padding: 10px 20px; /* 少し詰める (元は12px 25px) */
+    font-size: 0.95em; /* 少し詰める (元は1em) */
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    background-color: #3498db;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+.difficulty-button:hover {
+    background-color: #2980b9;
+}
+
+#game-screen {
+    display: grid;
+    grid-template-areas:
+        "opponent opponent"
+        "player player"
+        "message message"
+        "escape escape";
+    gap: 15px; /* ★変更: 各エリア間の隙間を詰める (元は20px) */
+}
+
+#opponent-area, #player-area {
+    border: 1px solid #ddd;
+    padding: 12px; /* ★変更: エリア内のパディングを詰める (元は15px) */
+    border-radius: 8px;
+}
+
+#opponent-area {
+    grid-area: opponent;
+    background-color: #fff0f0; 
+}
+
+#player-area {
+    grid-area: player;
+    background-color: #f0f8ff;
+}
+
+#opponent-area h3, #player-area h3 {
+    margin-top: 0;
+    margin-bottom: 10px; /* h3の下マージン調整 */
+    color: #2c3e50;
+    font-size: 1.1em; /* h3フォントサイズ調整 */
+}
+
+#player-pokemon-list {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 8px; /* ★変更: カード間ギャップを少し詰める (元は10px) */
+    min-height: 130px; /* ★変更: 高さを少し詰める (元は150px) */
+    overflow-x: auto; 
+    padding-bottom: 8px; 
+}
+
+.pokemon-card {
+    border: 2px solid #ccc;
+    padding: 6px; /* ★変更: パディングを詰める (元は8px) */
+    width: 95px; /* ★変更: 幅を詰める (元は100px) */
+    min-width: 95px; 
+    cursor: pointer;
+    background-color: #fff;
+    border-radius: 6px; /* ★変更 (元は8px) */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.pokemon-card:hover:not(.disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+}
+
+.pokemon-card.disabled {
+    background-color: #e0e0e0;
+    opacity: 0.6;
+    pointer-events: none;
+    box-shadow: none;
+}
+
+.pokemon-card img {
+    width: 60px; /* ★変更: 画像を小さく (元は70px) */
+    height: 60px; /* ★変更: 画像を小さく (元は70px) */
+    display: block;
+    margin-bottom: 4px; /* ★変更 (元は5px) */
+    background-color: #f9f9f9;
+    border-radius: 50%; 
+    object-fit: contain;
+}
+
+.pokemon-card p {
+    margin: 2px 0 0 0; /* ★変更 (元は3px) */
+    font-size: 0.8em; /* ★変更 (元は0.85em) */
+    font-weight: bold;
+}
+.pokemon-card .pokemon-types {
+    font-size: 0.65em; /* ★変更 (元は0.7em) */
+    color: #555;
+    line-height: 1.2;
+    margin-top: 2px;
+}
+
+/* 現在戦っている相手のポケモン情報 */
+#opponent-pokemon-info img {
+    width: 100px; /* ★変更: 画像サイズを縮小 (元は120px) */
+    height: 100px; /* ★変更: 画像サイズを縮小 (元は120px) */
+    margin-bottom: 8px; /* ★変更: 下マージンを少し詰める (元は10px) */
+    background-color: #f9f9f9;
+    border-radius: 50%;
+    object-fit: contain;
+}
+#opponent-pokemon-name {
+    font-size: 1.2em; /* ★変更 (元は1.3em) */
+    font-weight: bold;
+    margin-bottom: 4px; /* ★変更 (元は5px) */
+}
+.type-display {
+    margin-top: 4px; /* ★変更 (元は5px) */
+}
+
+/* 相手パーティのプレビューエリア全体 */
+#opponent-party-preview-area {
+    margin-top: 12px; /* ★変更: 上マージンを詰める (元は15px/20px) */
+    padding-top: 8px; /* ★変更: 上パディングを詰める (元は10px/15px) */
+    border-top: 1px dashed #ccc;
+}
+#opponent-party-preview-area h4 {
+    margin: 0 0 6px 0; /* ★変更: 下マージンを詰める (元は8px/10px) */
+    font-size: 0.9em; /* (元は1em/0.9em) */
+    color: #444;
+    text-align: left;
+}
+
+/* 相手の残りメンバーのプレビューリスト */
+#opponent-party-preview-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px; /* ★変更: 各プレビュー間の隙間を詰める (元は6px/8px) */
+    min-height: 45px; /* ★変更: 最小高さを少し詰める (元は50px/60px) */
+}
+
+/* 個々の相手プレビューポケモン */
+.opponent-preview-pokemon {
+    width: 45px;  /* ★変更: プレビューアイコンのサイズを縮小 (元は48px/55px) */
+    height: 45px; /* ★変更: プレビューアイコンのサイズを縮小 (元は48px/55px) */
+    border: 1px solid #e0e0e0;
+    border-radius: 4px; /* ★変更: 角丸を少し小さく (元は5px/6px) */
+    background-color: #fafafa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65em; /* ★変更: 基本フォントサイズを縮小 (元は0.7em/0.75em) */
+    position: relative; 
+    overflow: hidden;
+}
+.opponent-preview-pokemon img {
+    width: 30px;  /* ★変更: プレビュー内の画像サイズを縮小 (元は32px/40px) */
+    height: 30px; /* ★変更: プレビュー内の画像サイズを縮小 (元は32px/40px) */
+    object-fit: contain;
+    image-rendering: pixelated; 
+}
+.opponent-preview-pokemon.silhouette img {
+    filter: brightness(0) opacity(0.5);
+}
+.opponent-preview-pokemon .type-preview {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 2px; /* (元は1px/2px) */
+}
+.opponent-preview-pokemon .type-preview .type-tag {
+    font-size: 0.8em; /* 親フォントサイズ(0.65em)基準の相対サイズ (元は0.55emなど) */
+    padding: 1px 2px;
+    margin: 0 1px;
+    border-radius: 2px;
+    min-width: auto;
+}
+.opponent-preview-pokemon.silhouette .type-preview {
+    display: none;
+}
+.opponent-preview-pokemon.silhouette::before {
+    content: '?';
+    font-size: 1.6em; /* ★変更:「？」マークのサイズ調整 (元は1.8em/2em) */
+    color: #777;
+    position: absolute;
+    line-height: 1; 
+}
+.opponent-preview-pokemon.silhouette img {
+    display: none;
+}
+
+
+#battle-message-area {
+    grid-area: message;
+    padding: 12px; /* ★変更: パディングを少し詰める (元は15px) */
+    margin-top: 8px; /* ★変更: 上マージンを詰める (元は10px) */
+    min-height: 120px;  /* ★変更: 120pxで様子見 (元は130px) */
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    font-weight: bold;
+    color: #333;
+    line-height: 1.5; /* ★変更: 行間を少し詰める (元は1.6) */
+    display: flex; 
+    flex-direction: column; 
+    justify-content: flex-start; 
+    overflow-y: auto; 
+}
+#battle-message {
+    margin:0;
+}
+#compatibility-hint {
+    margin-top: 6px; /* ★変更 (元は8px) */
+    font-size: 0.9em; /* ★変更 (元は0.95em) */
+}
+#confirm-action {
+    margin-top: 8px; /* ★変更 (元は10px) */
+    padding: 6px 12px; /* ★変更 (元は8px 15px) */
+    font-size: 0.85em; /* ★変更 (元は0.9em) */
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #2ecc71;
+    color: white;
+}
+#confirm-action:hover {
+    background-color: #27ae60;
+}
+
+.escape-info {
+    grid-area: escape;
+    font-size: 0.85em; /* ★変更 (元は0.9em) */
+    color: #7f8c8d;
+    margin-top: 4px; /* ★変更 (元は5px) */
+}
+
+#result-screen h2 {
+    color: #3498db;
+    margin-bottom: 15px;
+}
+#result-screen p {
+    font-size: 1.1em;
+    margin: 8px 0;
+}
+#play-again {
+    margin-top: 20px; /* ★変更 (元は25px) */
+    padding: 10px 20px; /* ★変更 (元は12px 25px) */
+    font-size: 0.95em; /* ★変更 (元は1em) */
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    background-color: #e74c3c;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+#play-again:hover {
+    background-color: #c0392b;
+}
+
+.type-tag {
+    padding: 2px 6px; /* ★変更 (元は3px 8px) */
+    border-radius: 3px; /* ★変更 (元は4px) */
+    font-size: 0.75em; /* ★変更 (元は0.8em) */
+    margin: 0 2px;
+    color: white;
+    text-transform: uppercase;
+    font-weight: normal; /* 維持 */
+    display: inline-block;
+    min-width: 45px; /* ★変更 (元は50px) */
+    text-align: center;
+}
+
+.type-normal { background-color: #A8A77A; }
+.type-fire { background-color: #EE8130; }
+.type-water { background-color: #6390F0; }
+.type-electric { background-color: #F7D02C; color: #333; }
+.type-grass { background-color: #7AC74C; }
+.type-ice { background-color: #96D9D6; color: #333; }
+.type-fighting { background-color: #C22E28; }
+.type-poison { background-color: #A33EA1; }
+.type-ground { background-color: #E2BF65; color: #333; }
+.type-flying { background-color: #A98FF3; }
+.type-psychic { background-color: #F95587; }
+.type-bug { background-color: #A6B91A; }
+.type-rock { background-color: #B6A136; }
+.type-ghost { background-color: #735797; }
+.type-dragon { background-color: #6F35FC; }
+.type-dark { background-color: #705746; }
+.type-steel { background-color: #B7B7CE; color: #333;}
+.type-fairy { background-color: #D685AD; }
+
+#opponent-pokemon-name, .pokemon-name {
+    text-transform: capitalize;
+}
+
+/* --- 説明文エリアのスタイル調整 --- */
+#game-description {
+    text-align: left; /* 説明文のテキストを左寄せに */
+    margin-top: 30px; /* 結果画面やゲーム画面との間に余白を設ける */
+    padding-top: 20px; /* 説明文エリアの上部に少しパディング */
+    border-top: 1px solid #e0e0e0; /* ゲーム部分との区切り線 */
+}
+
+#game-description h2 { /* 説明文全体のタイトル「【タイプストライカー ～目指せ最速連勝！～】」 */
+    text-align: center; /* こちらのタイトルは中央寄せの方が見栄えが良いかもしれません */
+    font-size: 1.5em; /* 少し調整 */
+    margin-bottom: 25px;
+}
+
+#game-description h3 { /* 「◆ ゲーム概要 ◆」などのセクション見出し */
+    font-size: 1.2em; /* 少し調整 */
+    margin-top: 20px;
+    margin-bottom: 10px;
+    /* 必要であれば、これらの見出しも text-align: center; や text-align: left; で調整可能です */
+}
+
+#game-description p {
+    line-height: 1.65; /* 段落の行間を少し広げて読みやすくします */
+    margin-bottom: 1em; /* 各段落の下にマージン */
+}
+
+/* 備考: もし説明文内の全ての見出し (h2, h3) も左寄せにしたい場合は、
+   #game-description h2 の text-align: center; を削除またはコメントアウトしてください。
+*/
