@@ -23,6 +23,7 @@ const confirmActionButton = document.getElementById('confirm-action');
 const resultTitle = document.getElementById('result-title');
 const finalTimeDisplay = document.getElementById('final-time');
 const finalWinStreakDisplay = document.getElementById('final-win-streak');
+const finalDifficultyDisplay = document.getElementById('final-difficulty'); // ← 追加
 
 // 追加: 相手パーティプレビュー用DOM要素
 const opponentPartyPreviewList = document.getElementById('opponent-party-preview-list');
@@ -460,6 +461,24 @@ function endGame(isVictory) {
     }
     finalTimeDisplay.textContent = `最終タイム: ${timerDisplay.textContent}`;
     finalWinStreakDisplay.textContent = `最終連勝数: ${winStreak}`;
+
+    let difficultyJapanese = '';
+    switch (currentDifficulty) {
+        case 'easy':
+            difficultyJapanese = 'やさしい';
+            break;
+        case 'normal':
+            difficultyJapanese = 'ふつう';
+            break;
+        case 'hard':
+            difficultyJapanese = 'むずかしい';
+            break;
+        default:
+            difficultyJapanese = '不明';
+    }
+    if (finalDifficultyDisplay) { // 要素が存在することを確認
+        finalDifficultyDisplay.textContent = `プレイ難易度: ${difficultyJapanese}`;
+    }
 }
 
 
